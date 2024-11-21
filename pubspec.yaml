@@ -1,6 +1,6 @@
 name: ege_solver
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -10,6 +10,11 @@ dependencies:
   flutter:
     sdk: flutter
   fluent_ui: ^4.9.2
+  string_equation: ^1.0.3
+  expressions: ^0.2.5+2
+  trotter: ^2.2.0
+  window_manager: ^0.4.3
+  flutter_acrylic: ^1.1.4
 
 dev_dependencies:
   flutter_test:
