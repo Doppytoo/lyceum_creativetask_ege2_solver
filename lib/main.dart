@@ -10,14 +10,17 @@ void main() async {
   await windowManager.ensureInitialized();
   await flutter_acrylic.Window.initialize();
 
+  await flutter_acrylic.Window.hideWindowControls();
   const WindowOptions windowOptions = WindowOptions(
-    minimumSize: Size(500, 400),
+    title: 'Решатель ЕГЭ-2',
+    minimumSize: Size(500, 600),
     size: Size(600, 600),
-    maximumSize: Size(1200, 1000),
+    maximumSize: Size(1000, 1000),
     // center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
+    windowButtonVisibility: false,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.setMaximizable(false);
@@ -34,6 +37,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FluentApp(
+      title: 'Решатель ЕГЭ-2',
       debugShowCheckedModeBanner: true,
       themeMode: ThemeMode.system,
       theme: FluentThemeData(brightness: Brightness.light),
@@ -46,7 +50,7 @@ class MainApp extends StatelessWidget {
               ),
             )
       },
-      home: MainScreen(),
+      home: const MainScreen(),
     );
   }
 }

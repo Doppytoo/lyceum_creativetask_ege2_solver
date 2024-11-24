@@ -1,5 +1,5 @@
+import 'package:ege_solver/ui/utils/window_header.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 
 import 'package:ege_solver/logic/logical_expression_parser.dart';
 import 'package:ege_solver/logic/solver.dart';
@@ -51,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
       if (mounted) {
         await _showSolution(solution);
       }
-    } on RangeError {
+    } catch (e) {
       await _displayInvalidInputInfoBar();
     }
   }
@@ -94,66 +94,59 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
+    return NavigationView(
+      appBar: const NavigationAppBar(
+        title: DragToMoveArea(
+            child: SizedBox.expand(
+                child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text("Решатель ЕГЭ-2"),
+        ))),
+        leading: Icon(FluentIcons.calculated_table),
+        actions: WindowButtons(),
+      ),
+      content: ScaffoldPage(
+        header: PageHeader(title: Text('Условие задачи')),
+        content: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Выберите количество аргументов функции"),
+                  ComboBox<int>(
+                    value: _numberOfVariables,
+                    items: const [
+                      ComboBoxItem(value: 2, child: Text('2 (x, y)')),
+                      ComboBoxItem(value: 3, child: Text('3 (x, y, z)')),
+                      ComboBoxItem(value: 4, child: Text('4 (x, y, z, w)')),
+                    ],
+                    onChanged: (value) => setState(() {
+                      _table.clear();
 
-    return FutureBuilder(future: () async {
-      await flutter_acrylic.Window.setEffect(
-        effect: flutter_acrylic.WindowEffect.mica,
-        color: theme.micaBackgroundColor.withOpacity(1.0),
-        dark: theme.brightness == Brightness.dark,
-      );
-
-      return await windowManager.getTitleBarHeight();
-    }(), builder: (context, topPadding) {
-      if (!topPadding.hasData) return const ProgressBar();
-
-      return Padding(
-        padding: EdgeInsets.only(top: topPadding.data!.toDouble()),
-        child: ScaffoldPage(
-          header: const PageHeader(
-            title: Text('Решатель ЕГЭ-2'),
-          ),
-          content: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Выберите количество аргументов функции"),
-                    ComboBox<int>(
-                      value: _numberOfVariables,
-                      items: const [
-                        ComboBoxItem(value: 2, child: Text('2 (x, y)')),
-                        ComboBoxItem(value: 3, child: Text('3 (x, y, z)')),
-                        ComboBoxItem(value: 4, child: Text('4 (x, y, z, w)')),
-                      ],
-                      onChanged: (value) => setState(() {
-                        _table.clear();
-
-                        _numberOfVariables = value!;
-                        _table.add(List.filled(_numberOfVariables + 1, null));
-                      }),
-                    ),
-                  ],
-                ),
-                const Gap(8),
-                ExpressionInput(inputController: _expressionInputController),
-                const Gap(8),
-                TableInput(
-                  table: _table,
-                  numberOfVariables: _numberOfVariables,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FilledButton(child: Text("Решить"), onPressed: _solve),
-                )
-              ],
-            ),
+                      _numberOfVariables = value!;
+                      _table.add(List.filled(_numberOfVariables + 1, null));
+                    }),
+                  ),
+                ],
+              ),
+              const Gap(8),
+              ExpressionInput(inputController: _expressionInputController),
+              const Gap(8),
+              TableInput(
+                table: _table,
+                numberOfVariables: _numberOfVariables,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FilledButton(child: Text("Решить"), onPressed: _solve),
+              )
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }
